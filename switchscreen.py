@@ -343,11 +343,11 @@ class AppScreen(BaseSceen):
         self.textsceen.setMaximumWidth(502)
         self.textsceen.setMinimumWidth(502)
 
-    def action_leftpress(self):
+    def action_leftclick(self):
         # self.parent.swicthscreen(self.id, 'appscreen')
         pass
 
-    def action_rightpress(self):
+    def action_rightclick(self):
         self.parent.swicthscreen("mfdscreen")
 
 
@@ -369,10 +369,10 @@ class MFDScreen(BaseSceen):
         self.textsceen.setMaximumWidth(410)
         self.textsceen.setMinimumWidth(410)
 
-    def action_leftpress(self):
+    def action_leftclick(self):
         self.parent.swicthscreen('appscreen')
 
-    def action_rightpress(self):
+    def action_rightclick(self):
         self.parent.swicthscreen("menuscreen")
 
 
@@ -394,10 +394,10 @@ class MenuScreen(BaseSceen):
         self.textsceen.setMaximumWidth(502)
         self.textsceen.setMinimumWidth(502)
 
-    def action_leftpress(self):
+    def action_leftclick(self):
         self.parent.swicthscreen('mfdscreen')
 
-    def action_rightpress(self):
+    def action_rightclick(self):
         self.parent.swicthscreen('childmenuscreen')
 
 
@@ -419,12 +419,11 @@ class ChildMenuScreen(BaseSceen):
         self.textsceen.setMaximumWidth(502)
         self.textsceen.setMinimumWidth(502)
 
-    def action_leftpress(self):
+    def action_leftclick(self):
         self.parent.swicthscreen('menuscreen')
 
-    def action_rightpress(self):
-        # self.parent.swicthscreen(self.id, 'childmenuscreen')
-        pass
+    def action_rightclick(self):
+        self.parent.swicthscreen('menuscreen')
 
 
 class CenterWindow(QtGui.QWidget):
@@ -461,16 +460,16 @@ class CenterWindow(QtGui.QWidget):
         self.fixedsize()
 
 
-        getattr(self.controlpannel, "button_left").clicked.connect(self.appscreen.action_leftpress)
-        getattr(self.controlpannel, "button_right").clicked.connect(self.appscreen.action_rightpress)
+        getattr(self.controlpannel, "button_left").clicked.connect(self.appscreen.action_leftclick)
+        getattr(self.controlpannel, "button_right").clicked.connect(self.appscreen.action_rightclick)
 
     def swicthscreen(self, screen):
         n = getattr(self, screen)
         self.screens.setCurrentWidget(n)
         getattr(self.controlpannel, "button_left").clicked.disconnect()
         getattr(self.controlpannel, "button_right").clicked.disconnect()
-        getattr(self.controlpannel, "button_left").clicked.connect(n.action_leftpress)
-        getattr(self.controlpannel, "button_right").clicked.connect(n.action_rightpress)
+        getattr(self.controlpannel, "button_left").clicked.connect(n.action_leftclick)
+        getattr(self.controlpannel, "button_right").clicked.connect(n.action_rightclick)
 
 
     def fixedsize(self):
