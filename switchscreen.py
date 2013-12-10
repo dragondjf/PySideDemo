@@ -7,7 +7,6 @@ import copy
 import time
 
 
-
 def setbg(widget, filename):
     '''
         设置背景颜色或者图片,平铺
@@ -90,7 +89,6 @@ class IconButton(QtGui.QPushButton):
             if sptime > 2:
                 mode = "LONG"
             data = {"mode": mode, "name": name}
-
 
 
 class ControlPanel(QtGui.QGraphicsView):
@@ -345,11 +343,12 @@ class AppScreen(BaseSceen):
         self.textsceen.setMaximumWidth(502)
         self.textsceen.setMinimumWidth(502)
 
-    def action_leftclick(self):
-        self.parent.swicthcreen('mfdscreen')
+    def action_leftpress(self):
+        # self.parent.swicthscreen(self.id, 'appscreen')
+        pass
 
-    def action_rightclick(self):
-        self.parent.swicthcreen("appscreen")
+    def action_rightpress(self):
+        self.parent.swicthscreen("mfdscreen")
 
 
 class MFDScreen(BaseSceen):
@@ -370,11 +369,11 @@ class MFDScreen(BaseSceen):
         self.textsceen.setMaximumWidth(410)
         self.textsceen.setMinimumWidth(410)
 
-    def action_leftclick(self):
-        print self.id
+    def action_leftpress(self):
+        self.parent.swicthscreen('appscreen')
 
-    def action_rightclick(self):
-        print self.id
+    def action_rightpress(self):
+        self.parent.swicthscreen("menuscreen")
 
 
 class MenuScreen(BaseSceen):
@@ -389,12 +388,17 @@ class MenuScreen(BaseSceen):
     def initUI(self):
         self.textsceen = TextScreen(self)
         self.textsceen.initText(['menu1', 'menu2'])
+        self.textsceen.move(16, 62)
+        self.textsceen.setMinimumHeight(220)
+        self.textsceen.setMaximumHeight(220)
+        self.textsceen.setMaximumWidth(502)
+        self.textsceen.setMinimumWidth(502)
 
-    def action_leftclick(self):
-        print self.id
+    def action_leftpress(self):
+        self.parent.swicthscreen('mfdscreen')
 
-    def action_rightclick(self):
-        print self.id
+    def action_rightpress(self):
+        self.parent.swicthscreen('childmenuscreen')
 
 
 class ChildMenuScreen(BaseSceen):
@@ -409,12 +413,18 @@ class ChildMenuScreen(BaseSceen):
     def initUI(self):
         self.textsceen = TextScreen(self)
         self.textsceen.initText(['chiledmenu1', 'chiledmenu2'])
+        self.textsceen.move(16, 62)
+        self.textsceen.setMinimumHeight(220)
+        self.textsceen.setMaximumHeight(220)
+        self.textsceen.setMaximumWidth(502)
+        self.textsceen.setMinimumWidth(502)
 
-    def action_leftclick(self):
-        print self.id
+    def action_leftpress(self):
+        self.parent.swicthscreen('menuscreen')
 
-    def action_rightclick(self):
-        print self.id
+    def action_rightpress(self):
+        # self.parent.swicthscreen(self.id, 'childmenuscreen')
+        pass
 
 
 class CenterWindow(QtGui.QWidget):
@@ -450,18 +460,17 @@ class CenterWindow(QtGui.QWidget):
 
         self.fixedsize()
 
-        getattr(self.controlpannel, "button_left").clicked.connect(self.appscreen.action_leftclick)
-        getattr(self.controlpannel, "button_right").clicked.connect(self.appscreen.action_rightclick)
 
-    def swicthcreen(self, screenid):
-        for screen in self.screenslist:
-            if screen.id == screenid:
-                self.screens.setCurrentWidget(screen)
-            #     getattr(self.controlpannel, "button_left").clicked.connect(screen.action_leftclick)
-            #     getattr(self.controlpannel, "button_right").clicked.connect(screen.action_rightclick)
-            # else:
-            #     getattr(self.controlpannel, "button_left").clicked.disconnect(screen.action_leftclick)
-            #     getattr(self.controlpannel, "button_right").clicked.disconnect(screen.action_rightclick)
+        getattr(self.controlpannel, "button_left").clicked.connect(self.appscreen.action_leftpress)
+        getattr(self.controlpannel, "button_right").clicked.connect(self.appscreen.action_rightpress)
+
+    def swicthscreen(self, screen):
+        n = getattr(self, screen)
+        self.screens.setCurrentWidget(n)
+        getattr(self.controlpannel, "button_left").clicked.disconnect()
+        getattr(self.controlpannel, "button_right").clicked.disconnect()
+        getattr(self.controlpannel, "button_left").clicked.connect(n.action_leftpress)
+        getattr(self.controlpannel, "button_right").clicked.connect(n.action_rightpress)
 
 
     def fixedsize(self):
