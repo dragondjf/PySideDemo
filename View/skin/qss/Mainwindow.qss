@@ -1,0 +1,318 @@
+/***********************************************************/
+/* QMainWindow Style*/
+/***********************************************************/
+QMainWindow{
+    background-color: #3b4351;
+}
+
+QDockWidget {
+    border: 1px solid lightgray;
+    color: white;
+    background-color: #3b4351;
+}
+
+QDockWidget::title {
+    text-align: center; /* align the text to the left */
+    background-image: url(View/skin/PNG/bg_dock.png);
+    padding-left: 5px;
+}
+
+QMenuBar {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 lightgray, stop:1 darkgray);
+    background-image: url(View/skin/PNG/bg_dock.png);
+    color: white;
+    font-family: "Verdana";
+    font-size: 13px;
+    text-align: center;
+}
+
+QMenuBar::item {
+    /*spacing: 100px;  spacing between menu bar items */
+    padding: 1px 10px;
+    background-image: url(View/skin/PNG/bg_dock.png);
+}
+
+QMenuBar::item:selected { /* when selected using mouse or keyboard */
+    background: #a8a8a8;
+}
+
+QMenuBar::item:pressed {
+    background: #888888;
+ }
+
+QMenu {
+    color: white;
+    background-image: url(View/skin/PNG/bg_dock.png);
+    margin: 2px; /* some spacing around the menu */
+ }
+
+QMenu::item {
+    padding: 2px 25px 2px 20px;
+    background-image: url(View/skin/PNG/bg_dock.png);
+    border: 1px solid transparent; /* reserve space for selection border */
+}
+
+QMenu::item:selected {
+    border-color: darkblue;
+    background: rgba(100, 100, 100, 150);
+ }
+
+QMenu::icon:checked { /* appearance of a 'checked' icon */
+    background: gray;
+    border: 1px inset gray;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    left: 1px;
+ }
+
+QMenu::separator {
+    height: 2px;
+    background: lightblue;
+    margin-left: 10px;
+    margin-right: 5px;
+ }
+
+QMenu::indicator {
+    width: 13px;
+    height: 13px;
+ }
+
+/*QPushButton
+{
+    color: rgb(255, 255, 255);
+    background-color: rgb(167, 205, 255);
+    background: green;
+    border:none;
+    font-family: "Verdana";
+    font-size: 15px;
+    text-align: center;
+}
+
+QPushButton:hover, QPushButton:pressed , QPushButton:checked
+{
+    background-color: #e77817;
+    text-align: center;
+}
+QPushButton:hover
+{
+    background-repeat:no-repeat;
+    background-position: center left;
+}
+QPushButton:pressed, QPushButton:checked
+{
+    background-repeat:no-repeat;
+    background-position: center left;
+}
+
+QPushButton:disabled{
+    color: gray;
+    background-color: rgb(167, 205, 255);
+}
+*/
+QLineEdit {
+    font-size: 16px;
+    height: 30px;
+}
+
+QStatusBar {
+    background: gray;
+    font-weight: bold;
+    background-image: url(View/skin/PNG/bg_dock.png);
+    height: 40px;
+}
+
+QStatusBar QLabel {
+    border: 3px solid gray;
+    font-weight: bold;
+}
+
+QLabel {
+    color: white;
+}
+
+QLabel#MediaClock {
+    color: white;
+    font-size: 35px;
+}
+
+QHeaderView::section {
+    background-color: #3b4351;
+    color: white;
+    padding-left: 4px;
+    border: 1px solid #6c6c6c;
+ }
+
+QHeaderView::section:checked {
+    background-color: #112233;
+ }
+
+QHeaderView::section:checked {
+    background-color: white;
+}
+
+QHeaderView{
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #485260, stop: 0.5 #252a31,
+                                       stop: 0.6 #252a31, stop:1 #485260);
+}
+
+QHeaderView::section {
+    /*background-color: #252a31;*/
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #485260, stop: 0.5 #252a31,
+                                       stop: 0.6 #252a31, stop:1 #485260);
+    color: white;
+    padding-left: 4px;
+    border: 1px solid #252a31;
+ }
+ 
+QTreeWidget {
+    border: 1px solid #485260;
+    /*border: none;*/
+    color: white;
+    background-color: #5B677A;
+    selection-background-color:#485260;
+}
+
+QTableWidget {
+    border: 1px solid #485260;
+    /*border: none;*/
+    /*color: white;*/
+    background-color: #5B677A;
+    selection-color: #252a31;
+    selection-background-color:#485260;
+}
+
+QLabel#mediaClock {
+    color: white;
+    font-size: 35px;
+}
+
+QLabel#TitLabel {
+    color: white;
+    font-size: 35px;
+}
+
+QLabel#statusBar {
+    color: white;
+    font-size: 35px;
+
+}
+
+QPushButton#SoftButton {
+    background-color:transparent;
+    color:white;
+    font-size: 28px;
+}
+
+QWidget#Alert QLabel{
+    font-size: 40px;
+    color:white;
+}
+
+QWidget#Transition QLabel{
+    font-size: 40px;
+    color:white;
+}
+
+
+QScrollBar:vertical
+{
+width:10px;
+background-color:hsva(255,255,255,0%);
+}
+QScrollBar::handle:vertical
+{
+    /*background-color:hsva(200,200,200,20%);*/
+    background-color:#252a31;
+}
+QScrollBar::add-line:vertical
+{
+    background-color:hsva(255,255,255,0%);
+    subcontrol-position:bottom;
+}
+QScrollBar::sub-line:vertical
+{
+    background-color:hsva(255,255,255,0%);
+    subcontrol-position:top;
+}
+QScrollBar::add-page:vertical
+{
+    background:transparent;
+}
+QScrollBar::sub-page:vertical
+{
+    background:transparent;
+}
+
+QScrollBar:horizontal
+{
+height:10px;
+background-color:hsva(255,255,255,0%);
+}
+QScrollBar::handle:horizontal
+{
+    /*background-color:hsva(200,200,200,20%);*/
+    background-color:#252a31;
+}
+QScrollBar::add-line:horizontal
+{
+    background-color:hsva(255,255,255,0%);
+    subcontrol-position:bottom;
+}
+QScrollBar::sub-line:horizontal
+{
+    background-color:hsva(255,255,255,0%);
+    subcontrol-position:top;
+}
+QScrollBar::add-page:horizontal
+{
+    background:transparent;
+}
+QScrollBar::sub-page:horizontal
+{
+    background:transparent;
+}
+
+/*MFD3 MFD4 */
+QTextEdit#ShowScreenMFD4 {
+    border: 0px solid lightgray;
+    color: white;
+    selection-color: green;
+    selection-background-color: #252a31;
+    /*background-image: url(View/skin/PNG/bg.png);*/
+    background-attachment: fixed;
+}
+
+QTextEdit#ShowScreenMFD3 {
+    border: 0px solid lightgray;
+    color: white;
+    selection-color: green;
+    selection-background-color: #252a31;
+    /*background-image: url(View/skin/PNG/bg.png);*/
+    background-attachment: fixed;
+}
+
+QTextEdit#ScreenMFD4 {
+    border: 1px solid lightgray;
+    color: white;
+    font-size: 45px;
+    selection-color: green;
+    selection-background-color: #252a31;
+    /*background-image: url(View/skin/PNG/bg.png);*/
+    background-attachment: fixed;
+}
+
+QTextEdit#ScreenMFD3 {
+    border: 1px solid lightgray;
+    color: white;
+    font-size: 45px;
+    selection-color: green;
+    selection-background-color: #252a31;
+    /*background-image: url(View/skin/PNG/bg.png);*/
+    background-attachment: fixed;
+}
+
