@@ -249,7 +249,13 @@ class TextScreen(QtGui.QTextEdit):
         self.currentLineText = self.textcursor.selectedText()
 
     def downline(self):
-        self.textcursor.movePosition(QtGui.QTextCursor.Down)
+        flag = False
+        if self.currentLineNumber == len(self.text) - 1:
+            flag = True
+        if flag:
+            self.textcursor.movePosition(QtGui.QTextCursor.Start)
+        else:
+            self.textcursor.movePosition(QtGui.QTextCursor.Down)
         self.textcursor.select(QtGui.QTextCursor.LineUnderCursor)
         self.setTextCursor(self.textcursor)
         self.currentLineNumber = self.textCursor().blockNumber()
@@ -336,7 +342,7 @@ class AppScreen(BaseSceen):
 
     def initUI(self):
         self.textsceen = TextScreen(self)
-        self.textsceen.initText(['app1', 'app2'])
+        self.textsceen.initText(['app1', 'app2', 'app1', 'app2'])
         self.textsceen.move(16, 62)
         self.textsceen.setMinimumHeight(220)
         self.textsceen.setMaximumHeight(220)
@@ -344,11 +350,20 @@ class AppScreen(BaseSceen):
         self.textsceen.setMinimumWidth(502)
 
     def action_leftclick(self):
-        # self.parent.swicthscreen(self.id, 'appscreen')
         pass
 
     def action_rightclick(self):
         self.parent.swicthscreen("mfdscreen")
+
+    def action_upclick(self):
+        self.textsceen.upline()
+
+    def action_downclick(self):
+        self.textsceen.downline()
+
+    def action_okclick(self):
+        pass
+
 
 
 class MFDScreen(BaseSceen):
@@ -375,6 +390,15 @@ class MFDScreen(BaseSceen):
     def action_rightclick(self):
         self.parent.swicthscreen("menuscreen")
 
+    def action_upclick(self):
+        self.textsceen.upline()
+
+    def action_downclick(self):
+        self.textsceen.downline()
+
+    def action_okclick(self):
+        pass
+
 
 class MenuScreen(BaseSceen):
 
@@ -399,6 +423,16 @@ class MenuScreen(BaseSceen):
 
     def action_rightclick(self):
         self.parent.swicthscreen('childmenuscreen')
+
+    def action_upclick(self):
+        self.textsceen.upline()
+
+    def action_downclick(self):
+        self.textsceen.downline()
+
+    def action_okclick(self):
+        pass
+
 
 
 class ChildMenuScreen(BaseSceen):
@@ -425,6 +459,15 @@ class ChildMenuScreen(BaseSceen):
     def action_rightclick(self):
         self.parent.swicthscreen('menuscreen')
 
+    def action_upclick(self):
+        self.textsceen.upline()
+
+    def action_downclick(self):
+        self.textsceen.downline()
+
+    def action_okclick(self):
+        pass
+
 
 class CenterWindow(QtGui.QWidget):
 
@@ -432,6 +475,7 @@ class CenterWindow(QtGui.QWidget):
         super(CenterWindow, self).__init__(parent)
         self.parent = parent
         self.initUI()
+        self.fixedsize()
         setbg(self, os.sep.join([os.getcwd(), "View", 'skin', 'PNG', 'bg.png']))
 
     def initUI(self):
@@ -457,20 +501,18 @@ class CenterWindow(QtGui.QWidget):
         self.setLayout(mainLayout)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.fixedsize()
-
-
-        getattr(self.controlpannel, "button_left").clicked.connect(self.appscreen.action_leftclick)
-        getattr(self.controlpannel, "button_right").clicked.connect(self.appscreen.action_rightclick)
+        for item in ["left", "up", "right", "down", "ok"]:
+            action = getattr(self.appscreen, "action_%sclick" % item)
+            getattr(self.controlpannel, "button_%s" % item).clicked.connect(action)
 
     def swicthscreen(self, screen):
         n = getattr(self, screen)
         self.screens.setCurrentWidget(n)
-        getattr(self.controlpannel, "button_left").clicked.disconnect()
-        getattr(self.controlpannel, "button_right").clicked.disconnect()
-        getattr(self.controlpannel, "button_left").clicked.connect(n.action_leftclick)
-        getattr(self.controlpannel, "button_right").clicked.connect(n.action_rightclick)
-
+        for item in ["left", "up", "right", "down", "ok"]:
+            getattr(self.controlpannel, "button_%s" % item).clicked.disconnect()
+            if hasattr(n , "action_%sclick" % item):
+                action = getattr(n, "action_%sclick" % item)
+                getattr(self.controlpannel, "button_%s" % item).clicked.connect(action)
 
     def fixedsize(self):
         self.setMinimumHeight(596)
@@ -483,7 +525,6 @@ class CenterWindow(QtGui.QWidget):
 if __name__ == '__main__':
 
     import sys
-
     app = QtGui.QApplication(sys.argv)
     screen = CenterWindow()
     screen.show()
