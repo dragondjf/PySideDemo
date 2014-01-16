@@ -7,7 +7,7 @@ from PySide import QtCore
 
 logger = logging.getLogger(__file__)
 
-class QLogBrowser(QtGui.QTextBrowser):
+class QLogBrowser(QtGui.QTextEdit):
 
     style = '''
     QTextEdit{

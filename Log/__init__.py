@@ -1,15 +1,16 @@
 import logging
 import os
+import time
+import sys
 from logging.handlers import RotatingFileHandler
 from PySide import QtCore
-
 
 
 class LogSignal(QtCore.QObject):
     onelogsin = QtCore.Signal(str)
     def __init__(self):
         super(LogSignal, self).__init__()
-        
+
 
 logSignal = LogSignal()
 
@@ -17,6 +18,9 @@ logSignal = LogSignal()
 class LoggerHandler(logging.Handler):
     def __init__(self):
         super(LoggerHandler, self).__init__()
+        formatter = logging.Formatter('%(asctime)s %(levelname)8s [%(filename)16s:%(lineno)04s] %(message)s')
+        formatter2 = logging.Formatter('[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d] %(message)s')
+        self.setFormatter(formatter2)
 
     def emit(self, record):
         # onemessage = ' '.join([record.asctime, record.levelname, record.module, record.filename, str(record.lineno), record.msg]) 
@@ -48,8 +52,11 @@ class LoggerHandler(logging.Handler):
                 msglist.append("<font color=%s>%s</font>" % (levelcolors[str(getattr(record, item))], str(getattr(record, item))))
             else:
                 msglist.append("<font color=%s>%s</font>" % (colors[item], str(getattr(record, item))))
-        message = '     '.join(msglist)
+        message = ' '.join(msglist)
+        print message
         return message
+        # print self.format(record)
+        # return self.format(record)
 
 
 logging.root.setLevel(logging.DEBUG)
@@ -69,7 +76,7 @@ formatter = logging.Formatter('%(asctime)s %(levelname)8s [%(filename)16s:%(line
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
 logging.root.addHandler(fh)
-logging.root.addHandler(ch)
+# logging.root.addHandler(ch)
 logging.root.addHandler(wh)
 logger = logging.root
 logger.propagate = 0

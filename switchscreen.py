@@ -7,6 +7,93 @@ import copy
 import time
 
 
+class ScrollBar(QtGui.QTableWidget):
+
+    style = '''
+        /*border: 2px solid #485260;*/
+        /*border: none;*/
+        /*color: white;*/
+        background-color: rgb(48, 55, 72);
+        /*selection-color: #252a31;*/
+        selection-background-color:rgb(108,113,125);
+    '''
+
+    def __init__(self, row, height=200, parent=None):
+        super(ScrollBar, self).__init__(row, 1, parent)
+        self.setFixedSize(15, height)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.setEditTriggers(self.NoEditTriggers)
+        self.verticalHeader().setVisible(False)
+        self.horizontalHeader().setVisible(False)
+        self.setAutoScroll(False)
+        self.setFrameShape(QtGui.QFrame.NoFrame)
+        self.setShowGrid(True)
+
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+
+        self.initUI()
+
+    def initUI(self):
+        self.setStyleSheet(self.style)
+        for i in xrange(self.rowCount()):
+            self.setRowHeight(i, self.height() / self.rowCount())
+        self.selectRow(self.currentRow())
+    def singleselect(self, i):
+        self.selectRow(i)
+
+    def multiselect(self, selectlist):
+        for i in selectlist:
+            self.selectRow(i)
+
+    def resetRow(self, row):
+        self.setRowCount(row)
+        for i in xrange(self.rowCount()):
+            self.setRowHeight(i, self.height() / self.rowCount())
+        self.selectRow(self.currentRow())
+
+    def wheelEvent(self, event):
+        pass
+
+    def mouseMoveEvent(self, event):
+        pass
+
+    def mousePressEvent(self, event):
+        pass
+
+    def mouseReleaseEvent(self, event):
+        pass
+
+    def mouseDoubleClickEvent(self, event):
+        pass
+
+    def upline(self):
+        if self.currentRow() > 0: 
+            self.clearSelection()
+            self.singleselect(self.currentRow() - 1)
+
+    def downline(self):
+        if self.currentRow() < self.rowCount() - 1:
+            self.clearSelection()
+            self.singleselect(self.currentRow() + 1)
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Up:
+            if self.currentRow() > 0: 
+                self.clearSelection()
+                self.singleselect(self.currentRow() - 1)
+        elif event.key() == QtCore.Qt.Key_Down:
+            if self.currentRow() < self.rowCount() - 1:
+                self.clearSelection()
+                self.singleselect(self.currentRow() + 1)
+        elif event.key() == QtCore.Qt.Key_F1:
+            import random
+            self.resetRow(random.randint(0, 20))
+
+
 def setbg(widget, filename):
     '''
         设置背景颜色或者图片,平铺
@@ -208,7 +295,7 @@ class TextScreen(QtGui.QTextEdit):
         pl.setBrush(QtGui.QPalette.Base, QtGui.QBrush(QtGui.QColor(255, 0, 0, 0)))
         self.setPalette(pl)
 
-        # self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setReadOnly(True)
         self.setStyleSheet(self.style)
@@ -349,6 +436,9 @@ class AppScreen(BaseSceen):
         self.textsceen.setMaximumWidth(502)
         self.textsceen.setMinimumWidth(502)
 
+        self.scrollbar = ScrollBar(16, 200, self)
+        self.scrollbar.move(490, 70)
+
     def action_leftclick(self):
         pass
 
@@ -357,13 +447,19 @@ class AppScreen(BaseSceen):
 
     def action_upclick(self):
         self.textsceen.upline()
-
+        self.scrollbar.upline()
     def action_downclick(self):
         self.textsceen.downline()
+        self.scrollbar.downline()
 
     def action_okclick(self):
-        pass
-
+        import random
+        l = random.randint(0, 20)
+        texts = []
+        for i in xrange(l):
+            texts.append('app%d' % i)
+        self.textsceen.initText(texts)
+        self.scrollbar.resetRow(l)
 
 
 class MFDScreen(BaseSceen):
@@ -417,6 +513,9 @@ class MenuScreen(BaseSceen):
         self.textsceen.setMaximumHeight(220)
         self.textsceen.setMaximumWidth(502)
         self.textsceen.setMinimumWidth(502)
+
+        self.scrollbar = ScrollBar(4, 1, self)
+        self.scrollbar.move(500, 50)
 
     def action_leftclick(self):
         self.parent.swicthscreen('mfdscreen')
