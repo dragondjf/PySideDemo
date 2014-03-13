@@ -33,6 +33,7 @@ class TextScreen(QtGui.QTextEdit):
         color: white;
         background-color: #3b4351;
         border: none;
+        font-size: 40px;
         selection-color: green;
         selection-background-color: #252a31;
         background-image: url(skin/PNG/bg.png);
@@ -50,24 +51,40 @@ class TextScreen(QtGui.QTextEdit):
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setReadOnly(True)
         self.setStyleSheet(self.style)
-        self.setfont()
+        # self.setfont()
         self.resize(490, 200)
 
         self.text = ['1', '22', '333', '4444', '55555']
         self.currentLineNumber = 0
         self.currentLineText = ""
 
-        self.updateText(self.text)
         self.cursorPositionChanged.connect(self.high_light_current_line)
         self.textcursor = self.textCursor()
         self.textcursor.movePosition(QtGui.QTextCursor.Start)
         self.textcursor.select(QtGui.QTextCursor.LineUnderCursor)
         self.setTextCursor(self.textcursor)
 
+        # self.textChanged.connect(self.formatText)
+        self.updateText(self.text)
+
+
     def setfont(self):
         fontid = QtGui.QFontDatabase.addApplicationFont(self.fontFilePath)
         f = list(QtGui.QFontDatabase.applicationFontFamilies(fontid))[0]
         self.setFont(QtGui.QFont(f, 30))
+
+    def formatText(self):
+        self.textcursor = self.textCursor()
+        self.textcursor.movePosition(QtGui.QTextCursor.Start)
+        doc = self.document()
+        it = doc.begin()
+        while it != doc.end():
+            textBlockFormat = it.blockFormat()
+            textBlockFormat.setLineHeight(50, QtGui.QTextBlockFormat.FixedHeight)
+            self.textcursor.setBlockFormat(textBlockFormat)
+            self.setTextCursor(self.textcursor)
+            self.textcursor.movePosition(QtGui.QTextCursor.Down)
+            it = it.next()
 
     def high_light_current_line(self):
         extra_selections = []
@@ -79,6 +96,8 @@ class TextScreen(QtGui.QTextEdit):
         selection.cursor.clearSelection()
         extra_selections.append(selection)
         self.setExtraSelections(extra_selections)
+
+        # self.formatText()
 
     def upline(self):
         self.textcursor.movePosition(QtGui.QTextCursor.Up)
@@ -97,6 +116,8 @@ class TextScreen(QtGui.QTextEdit):
     def updateText(self, text):
         textstring = "\n".join(text)
         self.setPlainText(textstring)
+
+        self.formatText()
 
     @QtCore.Slot(int, str)
     def insertLine(self, row, content):

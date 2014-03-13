@@ -118,6 +118,49 @@ class MainWindow(QtGui.QWidget):
       QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
           background: none;
       }
+      '''
+
+    style2 = '''
+    QWidget{
+            background-color: black;
+        }
+      QScrollBar#mfd4scrollbar:vertical {
+    border:10px, transparent;
+    background: rgb(63, 70, 87);
+    width: 26px;
+    margin: 20px 5px 20px 5px;
+}
+QScrollBar#mfd4scrollbar::handle:vertical {
+    background: rgb(108, 113, 125);
+}
+QScrollBar#mfd4scrollbar::add-line:vertical {
+    background: transparent;
+    height: 20px;
+    width: 26px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar#mfd4scrollbar::sub-line:vertical {
+    background: transparent;
+    height: 20px;
+    width: 26px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar#mfd4scrollbar::down-arrow:vertical {
+    border-image: url(View/skin/PNG/downarrow_dash.png);
+}
+
+QScrollBar#mfd4scrollbar::up-arrow:vertical {
+    border-image: url(View/skin/PNG/uparrow_dash.png);
+}
+
+QScrollBar#mfd4scrollbar::add-page:vertical, QScrollBar#mfd4scrollbar::sub-page:vertical {
+    background: none;
+}
+
     '''
 
     def __init__(self, parent=None):
@@ -128,8 +171,9 @@ class MainWindow(QtGui.QWidget):
         self.scrollbar.move(20, 20)
 
         self.scrollbar2 = QtGui.QScrollBar(self)
+        self.scrollbar2.setObjectName("mfd4scrollbar")
         self.scrollbar2.setOrientation(QtCore.Qt.Vertical)
-        self.setStyleSheet(self.style)
+        self.setStyleSheet(self.style2)
         self.scrollbar2.setFixedHeight(200)
         self.scrollbar2.move(100, 20)
 
@@ -137,6 +181,11 @@ class MainWindow(QtGui.QWidget):
         self.scrollbar2.setMaximum(40)
 
         self.scrollbar2.setPageStep(40)
+
+        self.scrollbar2.valueChanged.connect(self.changestyle)
+
+    def changestyle(self, value):
+        print value
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Down:
@@ -234,9 +283,72 @@ class ScrollBarWidget(QtGui.QLabel):
     def mouseDoubleClickEvent(self, event):
         pass
 
+
+class TreeWidget(QtGui.QWidget):
+
+    def __init__(self, parent=None):
+        super(TreeWidget, self).__init__(parent)
+        self.choices = [ str(i) for i in xrange(100)]
+        self.radiobuttons = []
+        self.table = QtGui.QTableWidget(self)
+        self.table.setColumnCount(1)
+        self.table.setRowCount(len(self.choices))
+        self.table.setEditTriggers(self.table.NoEditTriggers)
+        self.table.verticalHeader().setVisible(False)
+        self.table.horizontalHeader().setVisible(False)
+
+        self.table.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        for index in range(len(self.choices)):
+            radiobutton = QtGui.QRadioButton(self.choices[index])
+            self.table.setCellWidget(index, 0, radiobutton)
+            self.radiobuttons.append(radiobutton)
+        self.radiobuttons[0].setChecked(True)
+
+        mainlayout = QtGui.QVBoxLayout()
+        mainlayout.addWidget(self.table)
+        self.setLayout(mainlayout)
+
+
+class TestWidget(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(TestWidget, self).__init__(parent)
+        self.resize(400, 300)
+        self.frame = QtGui.QFrame(self)
+        self.frame.move(10, 10)
+        self.frame.resize(200, 200)
+        self.frame.setStyleSheet("QFrame{background-color:rgb(36, 43, 61); border-radius: 10px;}")
+
+        for i in range(1, 4):
+            setattr(self, 'text%d' % i, QtGui.QLabel(self.frame))
+            label = getattr(self, 'text%d' % i)
+            label.setText("%d" % i)
+            label.setObjectName("AlertScreenText")
+            # label.setFont(self.font)
+            label.setAlignment(QtCore.Qt.AlignCenter)
+
+        for i in range(1, 5):
+            setattr(self, 'button%d' % i, QtGui.QPushButton('-', self.frame))
+            button = getattr(self, 'button%d' % i)
+            button.setObjectName("SoftButton")
+            # button.setFont(self.font)
+
+        mainlayout = QtGui.QVBoxLayout()
+        mainlayout.addWidget(self.text1)
+        mainlayout.addWidget(self.text2)
+        mainlayout.addWidget(self.text3)
+        softbuttonLayout = QtGui.QHBoxLayout()
+        for i in range(1, 5):
+            # getattr(self, "button%d" % i).setFixedSize(114, 40)
+            softbuttonLayout.addWidget(getattr(self, "button%d" % i))
+
+        mainlayout.addLayout(softbuttonLayout)
+        mainlayout.setContentsMargins(0, 0, 0, 0)
+        self.frame.setLayout(mainlayout)
+
+
 if __name__ == '__main__':
     import sys
     app = QtGui.QApplication(sys.argv)
-    main = MainWindow()
+    main = TestWidget()
     main.show()
     sys.exit(app.exec_())

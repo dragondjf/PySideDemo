@@ -574,7 +574,7 @@ class CenterWindow(QtGui.QWidget):
         super(CenterWindow, self).__init__(parent)
         self.parent = parent
         self.initUI()
-        self.fixedsize()
+        # self.fixedsize()
         setbg(self, os.sep.join([os.getcwd(), "View", 'skin', 'PNG', 'bg.png']))
 
     def initUI(self):
@@ -591,12 +591,27 @@ class CenterWindow(QtGui.QWidget):
         self.screens.addWidget(self.menuscreen)
         self.screens.addWidget(self.childmenuscreen)
 
+        widget = QtGui.QWidget(self)
+        widget.setStyleSheet("background-color: green;")
+        widget.setFixedSize(300, 50)
+        label1 = QtGui.QLabel(u'111顶顶顶顶顶顶顶顶顶1111')
+        label1.setFixedSize(80, 50)
+        label2 = QtGui.QLabel(u'111顶顶顶顶顶顶顶顶顶1111')
+        label2.setFixedSize(80, 50)
+        layout = QtGui.QHBoxLayout()
+        layout.addWidget(label1)
+        layout.insertStretch(1)
+        layout.addWidget(label2)
+        layout.setContentsMargins(0, 0, 0, 0)
+        widget.setLayout(layout)
+
 
         self.controlpannel = ControlPanel(self)
 
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(self.screens)
         mainLayout.addWidget(self.controlpannel)
+        mainLayout.addWidget(widget)
         self.setLayout(mainLayout)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
