@@ -94,122 +94,6 @@ class CenterWindow(QtGui.QFrame):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowIcon(QtGui.QIcon(os.sep.join([os.getcwd(), "skin", "images", "icon.ico"])))  # 设置程序图标
         self.setFixedSize(800, 500)
-        self.initUI()
-        self.setStyleSheet(self.style)
-        print self.a.pos(), self.mapFromGlobal(self.a.pos())
-
-    def initUI(self):
-        self.selectPanel = QtGui.QFrame()
-        self.listwidget = ListItemWidget(self)
-        self.listwidget.installEventFilter(self)
-        mainlayout = QtGui.QVBoxLayout(self)
-        mainlayout.addWidget(self.selectPanel)
-        mainlayout.addWidget(self.listwidget)
-        mainlayout.addStretch()
-        self.setLayout(mainlayout)
-        self.layout().setContentsMargins(5, 5, 5, 5)
-
-        self.selectPanel.setFixedHeight(50)
-        self.a = ListItemWidget(self.selectPanel)
-        self.a.move(20, 0)
-
-    def updateText(self, index):
-        print index
-        self.combox.setEditText(unicode(index))
-
-    def highlighted(self, index):
-        print 'highlighted', index
-
-    def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.MouseMove:
-            return True
-        else:
-            return super(CenterWindow, self).eventFilter(obj, event)
-
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Escape:
-            self.close()
-
-    def mousePressEvent(self, event):
-        self.setFocus()
-        if event.button() == QtCore.Qt.LeftButton:
-            self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
-            event.accept()
-
-    def mouseMoveEvent(self, event):
-        if event.buttons() == QtCore.Qt.LeftButton:
-            if hasattr(self, "dragPosition"):
-                self.move(event.globalPos() - self.dragPosition)
-                event.accept()
-
-
-class EventEater(QtCore.QObject):
-
-    def __init__(self, parent=None):
-        super(EventEater, self).__init__(parent)
-        self.parent = parent
-
-    def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.MouseMove:
-            return True
-        elif event.type() == QtCore.QEvent.Wheel:
-            return True
-        else:
-            return super(EventEater, self).eventFilter(obj, event)
-
-
-class ItemWidget(QtGui.QLabel):
-
-    style = '''
-        QLabel{
-            background-color: transparent;
-        }
-        QLabel: pressed{
-            background-color: green;
-        }
-
-        QPushButton#deleteButton{
-            background-color: green;
-        }
-
-        QPushButton#deleteButton:pressed {
-            background-color: red;
-        }
-
-        QLabel#itemLabel{
-            color: white;
-            font-size: 13px;
-            font-family: "Verdana";
-            background-color: black;
-            border: none;
-        }
-    '''
-    width = 200
-    height = 40
-
-    def __init__(self, text, deleteflag=True):
-        super(ItemWidget, self).__init__()
-        self.text = text
-        self.deleteflag = deleteflag
-        self.initUI()
-
-    def initUI(self):
-        self.setFixedSize(self.width, self.height)
-        mainlayout = QtGui.QHBoxLayout()
-        self.label = QtGui.QLabel(self.text)
-        self.label.setObjectName('itemLabel')
-
-        mainlayout.addWidget(self.label)
-        if self.deleteflag:
-            self.deleteButton = QtGui.QPushButton('x', self)
-            self.deleteButton.setObjectName('deleteButton')
-            self.deleteButton.setFixedSize(20, 20)
-            mainlayout.addWidget(self.deleteButton)
-        else:
-            pass
-        mainlayout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(mainlayout)
-        # self.setStyleSheet(self.style)
 
 
 class ListItemWidget(QtGui.QWidget):
@@ -294,9 +178,63 @@ class ListItemWidget(QtGui.QWidget):
         self.listScrollArea.setVisible(not self.listScrollArea.isVisible())
 
 
+class ListItem(QtGui.QPushButton):
+    """docstring for ListItem"""
+    style = '''
+        QPushButton{
+            background-color: transparent;
+        }
+        QPushButton:hover {
+            background-color: red;
+        }
+        QPushButton:pressed {
+            background-color: transparent;
+        }
+    '''
+    width = 100
+    height = 40
+
+    def __init__(self, text, parent=None):
+        super(ListItem, self).__init__(parent)
+        self.parent = parent
+        self.setFixedSize(self.width, self.height)
+        self.setStyleSheet(self.style)
+        self.setText(text)
+
+        self.deleteButton = QtGui.QPushButton(self)
+        self.deleteButton.setFixedSize(20, 20)
+        self.deleteButton.move(75, 10)
+
+        self.clicked.connect(self.changeBgColor)
+
+    def changeBgColor(self):
+        self.setStyleSheet("QPushButton{background-color: green;}")
+
+
+class DropDownArea(QtGui.QScrollArea):
+    """docstring for DropDownArea"""
+    def __init__(self, parent=None):
+        super(DropDownArea, self).__init__(parent)
+        self.parent = parent
+        self.initUI()
+        self.setFixedSize(300, 200)
+
+    def initUI(self):
+        self.listwidget = QtGui.QWidget()
+        listlayout = QtGui.QVBoxLayout()
+        for i in xrange(10):
+            route = "Route%d" % i
+            itemWidget = ListItem(route)
+            listlayout.addWidget(itemWidget)
+        listlayout.setContentsMargins(0, 0, 0, 0)
+        listlayout.setSpacing(0)
+        self.listwidget.setLayout(listlayout)
+        self.setWidget(self.listwidget)
+
+
 if __name__ == '__main__':
     import sys
     app = QtGui.QApplication(sys.argv)
-    main = CenterWindow()
+    main = DropDownArea()
     main.show()
     sys.exit(app.exec_())
