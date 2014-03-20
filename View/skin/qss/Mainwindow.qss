@@ -9,6 +9,7 @@ QDockWidget {
     border: 1px solid lightgray;
     color: white;
     background-color: #3b4351;
+    
 }
 
 QDockWidget::title {
