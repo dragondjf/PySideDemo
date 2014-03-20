@@ -1,0 +1,129 @@
+/*-----------*/
+/* App Screen*/
+/*-----------*/
+QLabel#TitLabel_windows {
+    color: rgb(13, 193, 226);
+    font-size: 35px;
+    font-family: 'HelveticaNeueLT Com 47 LtCn';
+    background-color: transparent;
+}
+
+QLabel#datatimeLabel_windows {
+    color: white;
+    font-size: 35px;
+    font-family: 'HelveticaNeueLT Com 47 LtCn';
+    background-color: transparent;
+}
+
+QLabel#TitLabel_mac {
+    color: rgb(13, 193, 226);
+    font-size: 35px;
+    font-family: 'Helvetica Neue LT Com';
+    background-color: transparent;
+}
+
+QLabel#datatimeLabel_mac {
+    color: white;
+    font-size: 35px;
+    font-family: 'Helvetica Neue LT Com';
+    background-color: transparent;
+}
+
+QTableWidget#TableScreen {
+    color: transparent;
+    font-size: 35px;
+    /*font-family: 'Helvetica Neue LT Com';*/
+    background-color: transparent;
+    selection-color: white;
+    selection-background-color:transparent;
+}
+
+QLabel#select{
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 2px;
+}
+
+/*-----------*/
+/* MFD Screen*/
+/*-----------*/
+
+QTableWidget#MFDScreenTableScreen {
+    color: transparent;
+    font-size: 35px;
+    background-color: transparent;
+    selection-color: white;
+    selection-background-color:transparent;
+}
+
+
+QLabel#MFDMedialabel {
+    color: white;
+    font-size: 35px;
+    background-color: transparent;
+}
+
+QLabel#MFDMediaClock {
+    color: white;
+    font-size: 35px;
+    background-color: transparent;
+}
+
+/*-----------*/
+/* Command Screen*/
+/*-----------*/
+
+
+/*-----------*/
+/* Alert Screen*/
+/*-----------*/
+QLabel#AlertScreenText {
+    color: white;
+    font-size: 35px;
+}
+
+/*-----------*/
+/* Scrollable Screen*/
+/*-----------*/
+QTextEdit#ScrollableScreen {
+    border: none;
+    color: white;
+    font-size: 35px;
+}
+
+
+QScrollBar#mfd4scrollbar:vertical {
+    background: rgb(63, 70, 87);
+    width: 26px;
+    margin: 20px 5px 20px 5px;
+}
+QScrollBar#mfd4scrollbar::handle:vertical {
+    background: rgb(108, 113, 125);
+}
+QScrollBar#mfd4scrollbar::add-line:vertical {
+    background: transparent;
+    height: 20px;
+    width: 26px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar#mfd4scrollbar::sub-line:vertical {
+    background: transparent;
+    height: 20px;
+    width: 26px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar#mfd4scrollbar::down-arrow:vertical {
+    border-image: url(View/skin/PNG/downarrow_dash.png);
+}
+
+QScrollBar#mfd4scrollbar::up-arrow:vertical {
+    border-image: url(View/skin/PNG/uparrow_dash.png);
+}
+
+QScrollBar#mfd4scrollbar::add-page:vertical, QScrollBar#mfd4scrollbar::sub-page:vertical {
+    background: none;
+}
