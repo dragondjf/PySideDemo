@@ -231,9 +231,13 @@ class DropDownArea(QtGui.QScrollArea):
         self.listwidget.setLayout(listlayout)
         self.setWidget(self.listwidget)
 
+def fun(*arg, **kwargs):
+    print arg, kwargs
 
 if __name__ == '__main__':
     import sys
+    d = {'s':3}
+    fun(1,2,a=1,b=2,**d)
     app = QtGui.QApplication(sys.argv)
     main = DropDownArea()
     main.show()
