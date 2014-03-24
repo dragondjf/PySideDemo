@@ -22,36 +22,33 @@ from PySide import QtCore
 '''
 
 
-
-
-ScreenType = ['app', 'mfd', 'command', 'submenu']
-ScreenSize = ['3', '4', '5', '8']
-
+viewType = ['app', 'mfd', 'command', 'submenu']
+viewSize = ['3', '4', '5', '8']
 
 
 class ViewManger(object):
     """docstring for Application"""
-    
-    screenType = []
-    screenSize = []
+
+    viewTypes = []
+    viewSizes = []
     views = []
     groups = {}
     currentSize = 3
     currentType = 'app'
 
     def __init__(self, arg):
-        super(Application, self).__init__()
+        super(ViewManger, self).__init__()
         self.arg = arg
-    
+
     @classmethod
     def register(cls, view):
-        if screenSize not in cls.screenSize:
-            cls.screenSize.append(view.screenSize)
-        if screenType not in cls.screenType:
-            cls.screenType.append(view.screenType)
+        if view.viewSize not in cls.viewSizes:
+            cls.viewSizes.append(view.viewSize)
+        if view.viewType not in cls.viewTypes:
+            cls.viewTypes.append(view.viewType)
         if view not in cls.views:
             cls.views.append(view)
-        cls.groups.update({(screenSize, screenType): view})
+        cls.groups.update({(view.viewSize, view.viewType): view})
 
     @classmethod
     def getView(cls, currentSize, currentType):
@@ -66,17 +63,17 @@ class BaseModel(object):
 
     views = []
 
-    def __init__(self, arg):
+    def __init__(self):
         super(BaseModel, self).__init__()
-        self.arg = arg
 
     def registerView(self, view):
         self.views.append(view)
         ViewManger.register(view)
 
-    def notify(self):
+    def notify(self, data):
         self.prepareNotify()
-        self.currentView.updateUI(data)
+        for view in self.views:
+            view.updateUI(data)
         self.finishNotify()
 
     def prepareNotify(self):
@@ -85,23 +82,13 @@ class BaseModel(object):
     def finishNotify(self):
         pass
 
-    @property
-    def currentView(self):
-        key = (ViewManger.currentSize, view.currentType)
-        self._currentView = ViewManger.getView()
-        return self._currentView
-
 
 class BaseView(object):
 
     """docstring for Screen"""
 
-    screenType = ''
-    screenSize = ''
-
-    def __init__(self, parent=None):
-        super(BaseView, self).__init__(parent)
-        self.parent = parent
+    viewType = ''
+    viewSize = 0
 
     def updateUI(self, data):
         pass
@@ -113,17 +100,17 @@ class BaseView(object):
 class BaseController(object):
 
     """docstring for BaseController"""
+    modelClass = BaseModel
 
-    def __init__(self, model=None):
-        super(BaseController, self).__init__()
-        self.model = model
+    def registerModel(self, model=None):
+        self.model = model or self.modelClass()
 
-    def register(self, view=None):
-        if model and view:
+    def registerView(self, view=None):
+        if view:
             self.model.registerView(view)
 
-    def update(self):
-        self.model.notify()
+    def update(self, data):
+        self.model.notify(data)
 
 
 class showModel(BaseModel):
@@ -131,42 +118,61 @@ class showModel(BaseModel):
     t = "123"
 
 
+class showController(QtCore.QObject, BaseController):
+
+    modelClass = showModel
+
+    def __init__(self, parent=None):
+        super(showController, self).__init__(parent)
+        self.registerModel()
+
+
 class Label1(QtGui.QLabel, BaseView):
 
-    def __init__(self, model, parent=None):
-        BaseView.__init__()
+    viewType = "l1"
+    viewSize = 1
+
+    def __init__(self, parent=None):
         super(Label1, self).__init__(parent)
+        self.initUI()
 
     def initUI(self):
-        pass
+        self.setFixedSize(100, 50)
+
+    def updateUI(self, data):
+        self.setText(data)
+        self.show()
+
+
+class Label2(QtGui.QLabel, BaseView):
+
+    viewType = "l2"
+    viewSize = 2
+
+    def __init__(self, parent=None):
+        super(Label2, self).__init__(parent)
+        self.initUI()
+
+    def initUI(self):
+        self.setFixedSize(100, 50)
 
     def updateUI(self, data):
         self.setText(data)
 
 
-class Label2(QtGui.QLabel, BaseView):
-
-    def __init__(self, model, parent=None):
-        BaseView.__init__()
-        super(Label2, self).__init__(parent)
-
-    def initUI(self):
-        pass
-
-    def updateUI(self):
-        self.setText(data)
-
-
 class Label3(QtGui.QLabel, BaseView):
 
-    def __init__(self, model, parent=None):
-        BaseView.__init__()
+    viewType = "l3"
+    viewSize = 3
+
+    def __init__(self, parent=None):
         super(Label3, self).__init__(parent)
+        self.initUI()
 
     def initUI(self):
-        pass
+        self.setFixedSize(100, 50)
 
-    def updateUI(self):
+    def updateUI(self, data):
         self.setText(data)
 
 
@@ -194,11 +200,25 @@ class CenterWindow(QtGui.QFrame):
         self.setFixedSize(800, 500)
         self.setStyleSheet(self. style)\
 
-        showModel()
+        self.l1 = Label1(self)
+        self.l1.move(100, 100)
+        self.l2 = Label2(self)
+        self.l2.move(200, 100)
+        self.l3 = Label3(self)
+        self.l3.move(300, 100)
+
+        self.controller = showController()
+        self.controller.registerView(self.l1)
+        self.controller.registerView(self.l2)
+        self.controller.registerView(self.l3)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
             self.close()
+        if event.key() == QtCore.Qt.Key_F1:
+            import random
+            self.controller.update('--%d--'%random.randint(1,10))
+            print ViewManger.groups
 
     def mousePressEvent(self, event):
         self.setFocus()
