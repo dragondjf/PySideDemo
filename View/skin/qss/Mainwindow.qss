@@ -6,6 +6,7 @@ QMainWindow{
 }
 
 QDockWidget {
+    font-family: "Verdana";
     border: 1px solid lightgray;
     color: white;
     background-color: #3b4351;
@@ -68,6 +69,18 @@ QMenu::icon:checked { /* appearance of a 'checked' icon */
     left: 1px;
  }
 
+ QMenu::item:disabled
+{
+    background: rgb(125, 125, 125);
+    border: 1px inset gray;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    left: 1px;
+}
+
+
 QMenu::separator {
     height: 2px;
     background: lightblue;
@@ -80,38 +93,6 @@ QMenu::indicator {
     height: 13px;
  }
 
-/*QPushButton
-{
-    color: rgb(255, 255, 255);
-    background-color: rgb(167, 205, 255);
-    background: green;
-    border:none;
-    font-family: "Verdana";
-    font-size: 15px;
-    text-align: center;
-}
-
-QPushButton:hover, QPushButton:pressed , QPushButton:checked
-{
-    background-color: #e77817;
-    text-align: center;
-}
-QPushButton:hover
-{
-    background-repeat:no-repeat;
-    background-position: center left;
-}
-QPushButton:pressed, QPushButton:checked
-{
-    background-repeat:no-repeat;
-    background-position: center left;
-}
-
-QPushButton:disabled{
-    color: gray;
-    background-color: rgb(167, 205, 255);
-}
-*/
 QLineEdit {
     font-size: 16px;
     height: 30px;
@@ -133,9 +114,13 @@ QLabel {
     color: white;
 }
 
-QLabel#MediaClock {
+QLabel {
     color: white;
-    font-size: 35px;
+}
+
+QWidget#Transition {
+    color: white;
+    font-size: 40px;
 }
 
 QHeaderView::section {
@@ -177,7 +162,7 @@ QTreeWidget {
     selection-background-color:#485260;
 }
 
-QTableWidget {
+QTableWidget#Float {
     border: 1px solid #485260;
     /*border: none;*/
     /*color: white;*/
@@ -186,133 +171,92 @@ QTableWidget {
     selection-background-color:#485260;
 }
 
-QLabel#mediaClock {
+QScrollBar:vertical {
+    border: 1px solid #252A31;
+    width: 10px;
+    margin: 15px 0 15px 0;
+    background: #5B677A;
+}
+QScrollBar::handle:vertical {
+    background: #31394E;
+    min-height: 20px;
+}
+
+QScrollBar::add-line:vertical {
+    background: #252A31;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    background: #252A31;
+    height: 20px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+/*QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    width: 3px;
+    height: 3px;
+    background: #31394E;
+}*/
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+
+QScrollBar:horizontal {
+    border: 1px solid #252A31;
+    background: #5B677A;
+    height: 10px;
+    margin: 0px 15px 0 15px;
+}
+QScrollBar::handle:horizontal {
+    background: #31394E;
+    min-width: 20px;
+}
+QScrollBar::add-line:horizontal {
+    background: #252A31;
+    width: 20px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+QScrollBar::sub-line:horizontal {
+    background: #252A31;
+    width: 20px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+/*QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+    width: 3px;
+    height: 3px;
+    background: #31394E;
+}*/
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+QTabWidget::pane { /* The tab widget frame */
+    border-top: 2px solid rgb(5, 9, 21);
+}
+
+QTabBar::tab {
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    height: 20px;
+    width: 120px;
     color: white;
-    font-size: 35px;
+    font-size: 15px;
+    font-family: "Verdana";
+    background-color: rgb(40, 47, 63);
 }
 
-QLabel#TitLabel {
-    color: white;
-    font-size: 35px;
+QTabBar::tab:selected{
+    background-color: rgb(63, 147, 168);
 }
 
-QLabel#statusBar {
-    color: white;
-    font-size: 35px;
-
+QTabBar::tab:hover {
+    background-color: rgb(69, 187, 217);
 }
-
-QPushButton#SoftButton {
-    background-color:transparent;
-    color:white;
-    font-size: 28px;
-}
-
-QWidget#Alert QLabel{
-    font-size: 40px;
-    color:white;
-}
-
-QWidget#Transition QLabel{
-    font-size: 40px;
-    color:white;
-}
-
-
-QScrollBar:vertical
-{
-width:10px;
-background-color:hsva(255,255,255,0%);
-}
-QScrollBar::handle:vertical
-{
-    /*background-color:hsva(200,200,200,20%);*/
-    background-color:#252a31;
-}
-QScrollBar::add-line:vertical
-{
-    background-color:hsva(255,255,255,0%);
-    subcontrol-position:bottom;
-}
-QScrollBar::sub-line:vertical
-{
-    background-color:hsva(255,255,255,0%);
-    subcontrol-position:top;
-}
-QScrollBar::add-page:vertical
-{
-    background:transparent;
-}
-QScrollBar::sub-page:vertical
-{
-    background:transparent;
-}
-
-QScrollBar:horizontal
-{
-height:10px;
-background-color:hsva(255,255,255,0%);
-}
-QScrollBar::handle:horizontal
-{
-    /*background-color:hsva(200,200,200,20%);*/
-    background-color:#252a31;
-}
-QScrollBar::add-line:horizontal
-{
-    background-color:hsva(255,255,255,0%);
-    subcontrol-position:bottom;
-}
-QScrollBar::sub-line:horizontal
-{
-    background-color:hsva(255,255,255,0%);
-    subcontrol-position:top;
-}
-QScrollBar::add-page:horizontal
-{
-    background:transparent;
-}
-QScrollBar::sub-page:horizontal
-{
-    background:transparent;
-}
-
-/*MFD3 MFD4 */
-QTextEdit#ShowScreenMFD4 {
-    border: 0px solid lightgray;
-    color: white;
-    selection-color: green;
-    selection-background-color: #252a31;
-    /*background-image: url(View/skin/PNG/bg.png);*/
-    background-attachment: fixed;
-}
-
-QTextEdit#ShowScreenMFD3 {
-    border: 0px solid lightgray;
-    color: white;
-    selection-color: green;
-    selection-background-color: #252a31;
-    /*background-image: url(View/skin/PNG/bg.png);*/
-    background-attachment: fixed;
-}
-
-QTextEdit#ScreenMFD4 {
-    border: 1px solid lightgray;
-    color: white;
-    font-size: 45px;
-    selection-color: green;
-    selection-background-color: #252a31;
-    /*background-image: url(View/skin/PNG/bg.png);*/
-    background-attachment: fixed;
-}
-
-QTextEdit#ScreenMFD3 {
-    border: 1px solid lightgray;
-    color: white;
-    font-size: 45px;
-    selection-color: green;
-    selection-background-color: #252a31;
-    /*background-image: url(View/skin/PNG/bg.png);*/
-    background-attachment: fixed;
-}
-
