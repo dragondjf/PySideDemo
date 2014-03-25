@@ -4,7 +4,7 @@ import sys
 import os
 from PySide import QtGui
 from PySide import QtCore
-
+import functools
 '''
 原则：
 1. 视图层每一个控件，仅仅包含UI元素及更新ui元素的接口,自定义事件接口
@@ -21,40 +21,21 @@ from PySide import QtCore
 
 '''
 
-
-viewType = ['app', 'mfd', 'command', 'submenu']
-viewSize = ['3', '4', '5', '8']
+views = {}
 
 
-class ViewManger(object):
-    """docstring for Application"""
+def registerView(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kwars):
+        fn(*args, **kwars)
+        views.update({args[0].viewID: args[0]})
+    return wrapper
 
-    viewTypes = []
-    viewSizes = []
-    views = []
-    groups = {}
-    currentSize = 3
-    currentType = 'app'
 
-    def __init__(self, arg):
-        super(ViewManger, self).__init__()
-        self.arg = arg
-
-    @classmethod
-    def register(cls, view):
-        if view.viewSize not in cls.viewSizes:
-            cls.viewSizes.append(view.viewSize)
-        if view.viewType not in cls.viewTypes:
-            cls.viewTypes.append(view.viewType)
-        if view not in cls.views:
-            cls.views.append(view)
-        cls.groups.update({(view.viewSize, view.viewType): view})
-
-    @classmethod
-    def getView(cls, currentSize, currentType):
-        key = (currentSize, currentType)
-        if key in cls.groups:
-            return cls.groups[key]
+def switchScreen(viewID):
+    stLayout = views['mainwindow'].layout()
+    if isinstance(stLayout, QtGui.QStackedLayout):
+        stLayout.setCurrentWidget(views[viewID])
 
 
 class BaseModel(object):
@@ -68,7 +49,6 @@ class BaseModel(object):
 
     def registerView(self, view):
         self.views.append(view)
-        ViewManger.register(view)
 
     def notify(self, data):
         self.prepareNotify()
@@ -87,7 +67,7 @@ class BaseView(object):
 
     """docstring for Screen"""
 
-    viewType = ''
+    viewID = ''
     viewSize = 0
 
     def updateUI(self, data):
@@ -129,9 +109,10 @@ class showController(QtCore.QObject, BaseController):
 
 class Label1(QtGui.QLabel, BaseView):
 
-    viewType = "l1"
+    viewID = "l1"
     viewSize = 1
 
+    @registerView
     def __init__(self, parent=None):
         super(Label1, self).__init__(parent)
         self.initUI()
@@ -140,15 +121,16 @@ class Label1(QtGui.QLabel, BaseView):
         self.setFixedSize(100, 50)
 
     def updateUI(self, data):
-        self.setText(data)
-        self.show()
+        self.setText(data + self.viewID)
+        # self.show()
 
 
 class Label2(QtGui.QLabel, BaseView):
 
-    viewType = "l2"
+    viewID = "l2"
     viewSize = 2
 
+    @registerView
     def __init__(self, parent=None):
         super(Label2, self).__init__(parent)
         self.initUI()
@@ -157,14 +139,15 @@ class Label2(QtGui.QLabel, BaseView):
         self.setFixedSize(100, 50)
 
     def updateUI(self, data):
-        self.setText(data)
+        self.setText(data + self.viewID)
 
 
 class Label3(QtGui.QLabel, BaseView):
 
-    viewType = "l3"
+    viewID = "l3"
     viewSize = 3
 
+    @registerView
     def __init__(self, parent=None):
         super(Label3, self).__init__(parent)
         self.initUI()
@@ -173,7 +156,15 @@ class Label3(QtGui.QLabel, BaseView):
         self.setFixedSize(100, 50)
 
     def updateUI(self, data):
-        self.setText(data)
+        self.setText(data + self.viewID)
+
+
+# l1 = Label1()
+# l1.move(100, 100)
+# l2 = Label2()
+# l2.move(200, 100)
+# l3 = Label3()
+# l3.move(300, 100)
 
 
 class CenterWindow(QtGui.QFrame):
@@ -189,7 +180,9 @@ class CenterWindow(QtGui.QFrame):
             background-color: red;
         }
     '''
+    viewID = "mainwindow"
 
+    @registerView
     def __init__(self, parent=None):
         super(CenterWindow, self).__init__(parent)
         self.setObjectName("CenterWindow")
@@ -200,25 +193,36 @@ class CenterWindow(QtGui.QFrame):
         self.setFixedSize(800, 500)
         self.setStyleSheet(self. style)\
 
-        self.l1 = Label1(self)
-        self.l1.move(100, 100)
-        self.l2 = Label2(self)
-        self.l2.move(200, 100)
-        self.l3 = Label3(self)
-        self.l3.move(300, 100)
+        # self.l1 = Label1(self)
+        # self.l1.move(100, 100)
+        # self.l2 = Label2(self)
+        # self.l2.move(200, 100)
+        # self.l3 = Label3(self)
+        # self.l3.move(300, 100)
+        l1 = Label1()
+        l2 = Label2()
+        l3 = Label3()
+        stLayout = QtGui.QStackedLayout(self)
+        stLayout.addWidget(l1)
+        stLayout.addWidget(l2)
+        stLayout.addWidget(l3)
+        self.setLayout(stLayout)
 
         self.controller = showController()
-        self.controller.registerView(self.l1)
-        self.controller.registerView(self.l2)
-        self.controller.registerView(self.l3)
+        self.controller.registerView(l1)
+        self.controller.registerView(l2)
+        self.controller.registerView(l3)
+
+        import random
+        self.controller.update('--%d--'%random.randint(1, 10))
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
             self.close()
         if event.key() == QtCore.Qt.Key_F1:
             import random
-            self.controller.update('--%d--'%random.randint(1,10))
-            print ViewManger.groups
+            switchScreen('l%d' % random.randint(1, 3))
+            print views
 
     def mousePressEvent(self, event):
         self.setFocus()
