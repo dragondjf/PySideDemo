@@ -38,6 +38,21 @@ def switchScreen(viewID):
         stLayout.setCurrentWidget(views[viewID])
 
 
+def getDataByID(signalID):
+    return signalID
+
+
+
+class ViewManger(QObject):
+
+    def __init__(self, parent=None):
+        super(ViewManger, self).__init__(parent)
+
+    @QtCore.Slot(str)
+    def receiveSignal(self, signalID):
+        request = getDataByID(signalID)
+        # controller = get
+
 class BaseModel(object):
 
     """docstring for BaseModel"""
