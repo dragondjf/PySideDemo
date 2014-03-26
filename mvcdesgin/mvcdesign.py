@@ -32,6 +32,8 @@ class Mainwindow(QtGui.QFrame):
     '''
     viewID = 'mainwindow'
     displayerSize = 4
+    currentdbID = "app"
+
 
     @collectViews
     def __init__(self, parent=None):
@@ -77,21 +79,23 @@ class Mainwindow(QtGui.QFrame):
             singleManager.methodsin.emit('addSubmenu')
         elif event.key() == QtCore.Qt.Key_Left:
             dbID = ['app', 'mfd', 'command', 'subMenu'][random.randint(1, 4) - 1]
+            self.currentdbID = dbID
             viewID = dbID + 'Displayer' + str(self.displayerSize)
             DisplayerManger.switchScreen(viewID, dbID)
         elif event.key() == QtCore.Qt.Key_Right:
             dbID = ['app', 'mfd', 'command', 'subMenu'][random.randint(1, 4) - 1]
+            self.currentdbID = dbID
             viewID = dbID + 'Displayer' + str(self.displayerSize)
             DisplayerManger.switchScreen(viewID, dbID)
         elif event.key() == QtCore.Qt.Key_Up:
             self.displayerSize = 3
-            dbID = 'app'
-            viewID =dbID + 'Displayer3'
+            dbID = self.currentdbID
+            viewID = self.currentdbID + 'Displayer3'
             DisplayerManger.switchScreen(viewID, dbID)
         elif event.key() == QtCore.Qt.Key_Down:
             self.displayerSize = 4
-            dbID = 'app'
-            viewID =dbID + 'Displayer4'
+            dbID = self.currentdbID
+            viewID = self.currentdbID + 'Displayer4'
             DisplayerManger.switchScreen(viewID, dbID)
 
     def mousePressEvent(self, event):
